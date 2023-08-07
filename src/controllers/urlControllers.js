@@ -1,4 +1,3 @@
-import { db } from "../database/database.js";
 import { customAlphabet } from "nanoid";
 import { addOneVisit, getShortUrl, getUrl, newShortURL } from "../repositories/urlRepository.js";
 import { checkUserToken } from "../repositories/authRepository.js";
@@ -17,9 +16,7 @@ export async function shortenUrl(req, res){
         const nanoid = customAlphabet("1234567890abcdef", 8);
         const shortUrl = nanoid();
         const user = await checkUserToken(token);
-        console.log(user.rows);
         const promise = await newShortURL(url, shortUrl, user.rows[0].userId);
-        console.log(promise.rows);
         res.status(201).send(promise.rows[0]);
     }
     catch(error){
