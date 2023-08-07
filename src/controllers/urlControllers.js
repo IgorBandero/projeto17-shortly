@@ -19,6 +19,9 @@ export async function shortenUrl(req, res){
         const nanoid = customAlphabet("1234567890abcdef", 8);
         const shortUrl = nanoid();
         const user = await checkUserToken(token);
+        if (user.rowCount === 0){
+            return res.status(401).send("Usuário inválido!");
+        }
         const promise = await newShortURL(url, shortUrl, user.rows[0].userId);
         res.status(201).send(promise.rows[0]);
     }
