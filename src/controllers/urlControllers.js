@@ -1,5 +1,5 @@
 import { customAlphabet } from "nanoid";
-import { addOneVisit, deleteShortUrl, getShortUrl, getUrl, newShortURL } from "../repositories/urlRepository.js";
+import { addOneVisit, deleteShortUrl, getShortUrl, getShortUrlsList, getUrl, getUrlsUser, newShortURL } from "../repositories/urlRepository.js";
 import { checkUserToken } from "../repositories/authRepository.js";
 import { registerUser } from "./userControllers.js";
 
@@ -102,7 +102,42 @@ export async function deleteUrl(req, res){
         }
 
         await deleteShortUrl(id);
-        res.status(204).send("Deu certo");
+        res.status(204).send("URL apagada com sucesso!");
+    }
+    catch(error){
+        console.log(error.message);
+        res.status(500).send(error.message);
+    } 
+}
+
+// #############################################################################################
+
+export async function getUserUrls(req, res){
+
+    const { authorization } = req.headers; 
+    const token = authorization?.replace("Bearer ", "");
+
+    if (!token){
+        return res.status(401).send("Acesso negado!");
+    }
+
+    try{
+        let user = await checkUserToken(token);   
+
+        if (user.rowCount === 0){
+            return res.status(401).send("Usuário não autorizado!");
+        }    
+
+        user = user.rows[0];
+        let userUrls = await getUrlsUser(user.userId)
+        userUrls = userUrls.rows[0];
+
+        let urls = getShortUrlsList(user.userId);
+        urls = (await urls).rows;
+
+        const userUrlsData = {...userUrls, shortenedUrls:[...urls]}
+
+        res.status(200).send(userUrlsData);
     }
     catch(error){
         console.log(error.message);
