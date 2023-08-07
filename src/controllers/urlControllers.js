@@ -1,6 +1,6 @@
 import { db } from "../database/database.js";
 import { customAlphabet } from "nanoid";
-import { getUrl, newShortURL } from "../repositories/urlRepository.js";
+import { addOneVisit, getShortUrl, getUrl, newShortURL } from "../repositories/urlRepository.js";
 import { checkUserToken } from "../repositories/authRepository.js";
 
 export async function shortenUrl(req, res){
@@ -37,7 +37,7 @@ export async function getUrlById(req, res){
     try{
         const promise = await getUrl(id);
         if (promise.rowCount === 0){
-            return res.status(401).send("URL não encontrada!");
+            return res.status(404).send("URL não encontrada!");
         }
         const urlFound = {
                         id: promise.rows[0].id,
@@ -47,6 +47,27 @@ export async function getUrlById(req, res){
 
         console.log(urlFound);
         res.status(200).send(urlFound);
+    }
+    catch(error){
+        console.log(error.message);
+        res.status(500).send(error.message);
+    } 
+}
+
+// #############################################################################################
+
+export async function visitUrl(req, res){
+
+    const { shortUrl } = req.params;
+
+    try{
+        const promise = await getShortUrl(shortUrl);
+        if (promise.rowCount === 0){
+            return res.status(404).send("URL não encontrada!");
+        }
+        
+        await addOneVisit(shortUrl);
+        res.redirect(302, promise.rows[0].url);
     }
     catch(error){
         console.log(error.message);

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { registerUser, loginUser } from "../controllers/userControllers.js";
-import { getUrlById, shortenUrl } from "../controllers/urlControllers.js";
+import { getUrlById, shortenUrl, visitUrl } from "../controllers/urlControllers.js";
 import { validationSchema } from "../middlewares/validationSchema.js";
 import { signInSchema, signUpSchema } from "../schemas/userSchema.js";
 import { urlSchema } from "../schemas/urlSchema.js";
@@ -12,5 +12,6 @@ router.post("/signup", validationSchema(signUpSchema), registerUser);
 router.post("/signin", validationSchema(signInSchema), loginUser);
 router.post("/urls/shorten", validationSchema(urlSchema), shortenUrl);
 router.get("/urls/:id", getUrlById);
+router.get("/urls/open/:shortUrl", visitUrl);
 
 export default router;
