@@ -8,8 +8,9 @@ import { registerUser } from "./userControllers.js";
 export async function shortenUrl(req, res){
 
     const { url } = req.body;
-    const { Authorization } = req.headers; 
-    const token = Authorization?.replace("Bearer", "");
+    const { authorization } = req.headers; 
+    console.log(authorization);
+    const token = authorization?.replace("Bearer", "");
 
     if (!token){
         return res.status(401).send("Acesso negado!");
