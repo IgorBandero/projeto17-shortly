@@ -8,8 +8,8 @@ import { registerUser } from "./userControllers.js";
 export async function shortenUrl(req, res){
 
     const { url } = req.body;
-    const { authorization } = req.headers; 
-    const token = authorization?.replace("Bearer", "");
+    const { Authorization } = req.headers; 
+    const token = Authorization?.replace("Bearer", "");
 
     if (!token){
         return res.status(401).send("Acesso negado!");
@@ -44,7 +44,7 @@ export async function getUrlById(req, res){
         }
         const urlFound = {
                             id: promise.rows[0].id,
-                            shortUrl: promise.rows[0].shortURL,
+                            shortUrl: promise.rows[0].shortUrl,
                             url: promise.rows[0].url
                         }
 
