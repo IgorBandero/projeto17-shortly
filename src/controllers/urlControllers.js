@@ -1,5 +1,5 @@
 import { customAlphabet } from "nanoid";
-import { addOneVisit, deleteShortUrl, getShortUrl, getShortUrlsList, getUrl, getUrlsUser, newShortURL } from "../repositories/urlRepository.js";
+import { addOneVisit, deleteShortUrl, getRankingList, getShortUrl, getShortUrlsList, getUrl, getUrlsUser, newShortURL } from "../repositories/urlRepository.js";
 import { checkUserToken } from "../repositories/authRepository.js";
 import { registerUser } from "./userControllers.js";
 
@@ -63,8 +63,7 @@ export async function visitUrl(req, res){
         const promise = await getShortUrl(shortUrl);
         if (promise.rowCount === 0){
             return res.status(404).send("URL não encontrada!");
-        }
-        
+        }        
         await addOneVisit(shortUrl);
         res.redirect(302, promise.rows[0].url);
     }
@@ -138,6 +137,21 @@ export async function getUserUrls(req, res){
         const userUrlsData = {...userUrls, shortenedUrls:[...urls]}
 
         res.status(200).send(userUrlsData);
+    }
+    catch(error){
+        console.log(error.message);
+        res.status(500).send(error.message);
+    } 
+}
+
+// #############################################################################################
+
+export async function getRanking(req, res){
+
+    try{
+        let ranking = await getRankingList();
+        ranking = ranking.rows;
+        res.status(200).send(ranking);
     }
     catch(error){
         console.log(error.message);
