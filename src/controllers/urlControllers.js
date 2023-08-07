@@ -1,6 +1,9 @@
 import { customAlphabet } from "nanoid";
-import { addOneVisit, getShortUrl, getUrl, newShortURL } from "../repositories/urlRepository.js";
+import { addOneVisit, deleteShortUrl, getShortUrl, getUrl, newShortURL } from "../repositories/urlRepository.js";
 import { checkUserToken } from "../repositories/authRepository.js";
+import { registerUser } from "./userControllers.js";
+
+// #############################################################################################
 
 export async function shortenUrl(req, res){
 
@@ -84,11 +87,22 @@ export async function deleteUrl(req, res){
     }
 
     try{
-        const user = await checkUserToken(token);
-        console.log(user.rows);
-        const promise = await newShortURL(url, shortUrl, user.rows[0].userId);
-        console.log(promise.rows);
-        res.status(201).send(promise.rows);
+        let userToken = await checkUserToken(token);        
+        userToken = userToken.rows[0].userId;
+        let userUrl = await getUrl(id);
+
+        if (userUrl.rowCount === 0){
+            return res.status(404).send("Url não cadastrada!");
+        }
+
+        userUrl = userUrl.rows[0].userId;
+
+        if (userToken !== userUrl){
+            return res.status(401).send("Url não pertence ao usuário logado no momento!");
+        }
+
+        await deleteShortUrl(id);
+        res.status(204).send("Deu certo");
     }
     catch(error){
         console.log(error.message);

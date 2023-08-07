@@ -5,7 +5,7 @@
 -- Dumped from database version 14.8 (Ubuntu 14.8-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.8 (Ubuntu 14.8-0ubuntu0.22.04.1)
 
--- Started on 2023-08-07 00:51:39 -03
+-- Started on 2023-08-07 14:51:06 -03
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -31,7 +31,7 @@ CREATE TABLE public."authSessions" (
     id integer NOT NULL,
     token text NOT NULL,
     "userId" integer,
-    "createAt" timestamp without time zone DEFAULT now() NOT NULL
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -66,10 +66,10 @@ ALTER SEQUENCE public."authSessions_id_seq" OWNED BY public."authSessions".id;
 CREATE TABLE public.urls (
     id integer NOT NULL,
     url text NOT NULL,
-    "shortURL" text NOT NULL,
+    "shortUrl" text NOT NULL,
     "userId" integer NOT NULL,
     "visitCount" integer DEFAULT 0,
-    "createAt" timestamp without time zone DEFAULT now() NOT NULL
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -106,7 +106,7 @@ CREATE TABLE public.users (
     name text NOT NULL,
     email text NOT NULL,
     password text NOT NULL,
-    "createAt" timestamp without time zone DEFAULT now() NOT NULL
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -190,7 +190,7 @@ ALTER TABLE ONLY public.urls
 --
 
 ALTER TABLE ONLY public.urls
-    ADD CONSTRAINT "urls_shortURL_key" UNIQUE ("shortURL");
+    ADD CONSTRAINT "urls_shortURL_key" UNIQUE ("shortUrl");
 
 
 --
@@ -229,7 +229,7 @@ ALTER TABLE ONLY public.urls
     ADD CONSTRAINT "urls_userId_fkey" FOREIGN KEY ("userId") REFERENCES public.users(id);
 
 
--- Completed on 2023-08-07 00:51:39 -03
+-- Completed on 2023-08-07 14:51:06 -03
 
 --
 -- PostgreSQL database dump complete

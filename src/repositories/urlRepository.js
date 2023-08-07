@@ -16,3 +16,7 @@ export async function getShortUrl(shortURL){
 export async function addOneVisit(shortURL){
     return db.query(`UPDATE urls SET "visitCount" = "visitCount" + 1 WHERE "shortUrl" = $1;`, [shortURL]);
 }
+
+export async function deleteShortUrl(id){
+    return db.query("DELETE FROM urls WHERE id=$1;", [id]);
+}
